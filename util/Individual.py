@@ -32,6 +32,10 @@ class Individual:
 		return self.genotype[i*self.geneLen:i*self.geneLen+self.geneLen]
 
 	def setGene(self, i, gene):
+		"""
+		Set the ith gene in genotype
+		If the argument passed is not a binary list it raise an exception
+		"""
 		if i <= 0 :
 			raise Exception('You can only set a gene starting to 1 to ' + str(self.geneLen))
 		i=i-1
