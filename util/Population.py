@@ -1,14 +1,15 @@
 from util.Individual import Individual
 class Population:
-	def __init__(self, num_individuals, numBits=5):
+	def __init__(self, num_individuals, numGenes=24, geneLen=3):
 		"""
 		Initialize a population with num_individuals binary
-		string individuals,the default bits is 5
+		string individuals,the default genes number is 24
+		and the default binary string (gene) length is 3
 		"""
 		self.individuals = []
 		self.epoch = 0
 		for i in range(0, num_individuals):
-			self.individuals.append(Individual(numBits))
+			self.individuals.append(Individual(numGenes, geneLen))
 
 	def setFitnessFunc(self, fitnessFunc):
 		"""
