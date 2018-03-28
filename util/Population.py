@@ -33,6 +33,3 @@ class Population:
 		pass
 	def __survivalSelection(self):
 		pass
-
-	# TODO: Should the function of mutation be here
-	# 		or in the individual class?
