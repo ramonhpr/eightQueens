@@ -20,7 +20,7 @@ class Individual:
 		"""
 		Get the number of genes in the genotype
 		"""
-		return len(self.genotype)/self.geneLen
+		return int(len(self.genotype)/self.geneLen)
 
 	def getGene(self, i):
 		"""
