@@ -86,6 +86,9 @@ class Individual:
 		return f
 
 	def __defaultMutationFunc(self, *args, **kwargs):
+		"""
+		Change two genes in a genotype according to the probability of mutation
+		"""
 		#positions to be found
 		pos1, pos2 = 0, 0
 		# compute chances of mutation
