@@ -34,7 +34,7 @@ class Individual:
 	def setGene(self, i, gene):
 		if i <= 0 :
 			raise Exception('You can only set a gene starting to 1 to ' + str(self.geneLen))
-			i=i-1
+		i=i-1
 		if not isinstance(gene, list):
 			raise TypeError('The gene should be a list')
 		if len(gene) > self.geneLen:
