@@ -82,11 +82,11 @@ class Individual:
 			baseQueenRow = self.binaryToDecimal(self.genotype, (j*3), 3)
 			# Look for queens on the same row or diagonal.
 			for jx in range(8):
-				endQueenRow = self.binaryToDecimal(self.genotype, (jx*3), 3);
-				sameRow = (baseQueenRow == endQueenRow);
-				onDiagonal = (abs(baseQueenRow-endQueenRow) == abs(j-jx));
-				collisions += ((sameRow == 1 or onDiagonal == 1) and (jx != j));
-			f += (collisions == 0);
+				endQueenRow = self.binaryToDecimal(self.genotype, (jx*3), 3)
+				sameRow = (baseQueenRow == endQueenRow)
+				onDiagonal = (abs(baseQueenRow-endQueenRow) == abs(j-jx))
+				collisions += ((sameRow == 1 or onDiagonal == 1) and (jx != j))
+			f += (collisions == 0)
 		return f
 
 	def __defaultMutationFunc(self, *args, **kwargs):
