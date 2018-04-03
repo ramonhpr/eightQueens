@@ -86,11 +86,14 @@ class Individual:
 		return f
 
 	def __defaultMutationFunc(self, *args, **kwargs):
-		# swap the first and second gene in genotype
-		self.genotype[0],self.genotype[1]=self.genotype[1],self.genotype[0]
-
-
-
-
-
-
+		#positions to be found
+		pos1, pos2 = 0, 0
+		# compute chances of mutation
+		if(random.randint(1,10) < (MUTATION_PROB * 10)):
+			# pickup two different numbers to mutate in genotype
+			while(pos1==pos2):
+				pos1 = random.randint(0,7)
+				pos2 = random.randint(0,7) 
+			# swap the first and second gene in genotype
+			self.genotype[pos1],self.genotype[pos2]=self.genotype[pos2],self.genotype[pos1]
+		
