@@ -64,14 +64,29 @@ class Individual:
 		"""
 		self.mutationFunc(*args, **kwargs)
 
-	def binaryToDecimal(self, string, i, length):
-		num = 0
-		maximum = (i+length)
-		while i < maximum:
-			num = num << 1
-			num += int(string[i])
-			i = i + 1
-		return num
+	def __listToStr(self, l):
+		"""
+		This auxiliar function convert a list to a string
+		"""
+		return ''.join(str(i) for i in l)
+
+	def __binaryToDecimal(self, l):
+		"""
+		This function receive a binary list and convert to a decimal list
+		"""
+		s = self.__listToStr(l)
+		arr=[]
+		while len(s) > 0:
+			tmp = s[ :self.geneLen]
+			s = s[self.geneLen: ]
+			arr.append(int(tmp,2))
+		return arr
+
+	def getGenotypeDecimal(self):
+		"""
+		This function return the genotype conveted to decimal
+		"""
+		return self.__binaryToDecimal(self.genotype)
 
 	def __defaultFitnessFunc(self, *args, **kwargs):
 		f = 0
@@ -79,10 +94,10 @@ class Individual:
     	# Loop through each queen position (row assignment).
 		for j in range(8):
 			collisions = 0
-			baseQueenRow = self.binaryToDecimal(self.genotype, (j*3), 3)
+			baseQueenRow = self.__binaryToDecimal(self.getGene(j+1))[0]
 			# Look for queens on the same row or diagonal.
 			for jx in range(8):
-				endQueenRow = self.binaryToDecimal(self.genotype, (jx*3), 3)
+				endQueenRow = self.__binaryToDecimal(self.getGene(jx+1))[0]
 				sameRow = (baseQueenRow == endQueenRow)
 				onDiagonal = (abs(baseQueenRow-endQueenRow) == abs(j-jx))
 				collisions += ((sameRow == 1 or onDiagonal == 1) and (jx != j))
