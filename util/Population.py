@@ -94,6 +94,7 @@ class Population:
 		"""
 		This function cut the 3 first genes and recombine the other ones
 		with parents to generate new children
+		You will have to verify if the children is None
 		"""
 		firstSlice1 = []
 		firstSlice2 = []
@@ -105,9 +106,15 @@ class Population:
 		for i in range(4,int(ind1.getGeneNum())+1):
 			lastSlice1.append(ind1.getGene(i))
 			lastSlice2.append(ind2.getGene(i))
-		newInd1 = self.__recombine(ind1,firstSlice2,lastSlice2)
-		newInd2 = self.__recombine(ind2,firstSlice1,lastSlice1)
-		return (newInd1,newInd2)
+
+		newInd1 = ind1
+		newInd2 = ind2
+		if(random.randint(1, 10) < (config.RECOMBINATION_PROB * 10)):
+			newInd1 = self.__recombine(ind1, firstSlice2, lastSlice2)
+			newInd2 = self.__recombine(ind2, firstSlice1, lastSlice1)
+			return (newInd1, newInd2)
+		else:
+			return (None, None)
 
 	def __defaultParentsSelectionFunction(self):
 		# The default parents selection method is based on picking

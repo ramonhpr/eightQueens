@@ -59,10 +59,12 @@ for ind1,ind2 in pop.parentsSelectionFunction():
     print(ind2.getGenotypeDecimal())
     print('New Individuals')
     i,j = pop.crossover(ind1, ind2)
-    tmp.append(i)
-    tmp.append(j)
-    print(i.getGenotypeDecimal())
-    print(j.getGenotypeDecimal())
+    if i:
+        tmp.append(i)
+        print(i.getGenotypeDecimal())
+    if j:
+        tmp.append(j)
+        print(j.getGenotypeDecimal())
     print('------')
 pop.individuals= pop.individuals+tmp
 
@@ -81,8 +83,13 @@ for ind1,ind2 in pop.parentsSelectionFunction():
     print(ind2.getGenotypeDecimal())
     print('New Individuals')
     i,j = pop.crossover(ind1, ind2)
-    print(i.getGenotypeDecimal())
-    print(j.getGenotypeDecimal())
+    if i:
+        tmp.append(i)
+        print(i.getGenotypeDecimal())
+    if j:
+        tmp.append(j)
+        print(j.getGenotypeDecimal())
+
     print('------')
 
 # Test roulette wheel selection.
