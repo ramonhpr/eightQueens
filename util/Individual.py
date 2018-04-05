@@ -4,6 +4,8 @@
 
 import util.config as config
 from random import randint
+from math import factorial
+from itertools import permutations
 
 class Individual:
 
@@ -12,7 +14,7 @@ class Individual:
 	def __init__(self, genotypeLen=24, geneLen=3, fitnessFunc=None, mutationFunc=None):
 		self.error = 0
 		self.geneLen = geneLen
-		self.genotype = [randint(0, 1) for _ in range(0, genotypeLen)]
+		self.genotype = Individual.generateGenotype(genotypeLen, geneLen)
 		self.fenotype = self.genotype
 		self.fitnessFunc = self.__defaultFitnessFunc if not fitnessFunc else fitnessFunc
 		self.mutationFunc = self.__defaultMutationFunc if not mutationFunc else mutationFunc
@@ -70,6 +72,26 @@ class Individual:
 		This auxiliar function convert a list to a string
 		"""
 		return ''.join(str(i) for i in l)
+
+	@staticmethod
+	def generateGenotype(genotypeLen, geneLen):
+		"""
+		This auxiliar function return a list with genotypes permuutations
+		"""
+		index = randint(0, factorial(int(genotypeLen/geneLen)))
+		genotypeDecimal = None
+		for i,t in enumerate(permutations(range(int(genotypeLen/geneLen)))):
+			if i == index:
+				genotypeDecimal = list(t)
+				break
+		genotypeStr = []
+		strFormat = '0'+str(geneLen)+'b'
+		for i in genotypeDecimal:
+			genotypeStr.append(format(i, strFormat))
+		genotype = []
+		for i in genotypeStr:
+			genotype = genotype + [j for j in i]
+		return genotype
 
 	def __binaryToDecimal(self, l):
 		"""
