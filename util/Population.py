@@ -3,11 +3,14 @@
 #
 
 from util.Individual import Individual
+import util.config as config
 import random
+from operator import methodcaller
 
 class Population:
 
-	def __init__(self, num_individuals=100, numGenes=24, geneLen=3, parentsSelectionFunction=None, crossOverFunction=None):
+	def __init__(self, num_individuals=100, numGenes=24, geneLen=3,
+				parentsSelectionFunction=None, crossOverFunction=None, survivalSelectFunction=None):
 		"""
 		Initialize a population with num_individuals binary
 		string individuals,the default genes number is 24
@@ -17,6 +20,7 @@ class Population:
 		self.epoch = 0
 		self.parentsSelectionFunction = self.__defaultParentsSelectionFunction if not parentsSelectionFunction else parentsSelectionFunction
 		self.crossoverFunction = self.__defaultCrossoverFunction if not crossOverFunction else crossOverFunction
+		self.survivalSelectFunction = self.__defaultSurvivalSelectFunction if not survivalSelectFunction else survivalSelectFunction
 
 		for i in range(0, num_individuals):
 			individual = Individual(numGenes, geneLen)
@@ -54,6 +58,16 @@ class Population:
 		"""
 		"""
 		return self.parentsSelectionFunction(*args, **kwargs)
+
+	def setSurvivalFunction(self, func):
+		"""
+		Set the survival slection function passed, for the user
+		choice which crossover function use
+		"""
+		self.survivalSelectFunction = func
+
+	def survivalSelect(self, *args, **kwargs):
+		return self.survivalSelectFunction(*args, **kwargs)
 
 	def __recombine(self, ind, stackHead, stackTail):
 		"""
@@ -113,5 +127,14 @@ class Population:
 			couples.append([candidates[0], candidates[1]])
 		return couples
 
-	def __survivalSelection(self):
-		pass
+	def __defaultSurvivalSelectFunction(self, numSurvivals=config.NUM_INDIVIDUALS):
+		"""
+		This function remove the individuals with small fitness from population
+		"""
+		# Sort individuals by fitness
+		self.individuals.sort(key=methodcaller('fitness'), reverse=True)
+		if len(self.individuals) > numSurvivals:
+			for i in range(len(self.individuals)-numSurvivals):
+				self.individuals.pop()
+		else:
+			raise Exception('Your population is smaller than your settings. You probably do not run the crossover')

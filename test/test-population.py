@@ -50,19 +50,29 @@ def cutAndCross(ind1, ind2):
     newInd2 = recombine(ind2,firstSlice1,lastSlice1)
     return (newInd1,newInd2)
 
-pop = Population(15)
+pop = Population(10)
 print('- Test crossover function')
+tmp=[]
 for ind1,ind2 in pop.parentsSelectionFunction():
     print('Parents selected')
     print(ind1.getGenotypeDecimal())
     print(ind2.getGenotypeDecimal())
     print('New Individuals')
     i,j = pop.crossover(ind1, ind2)
+    tmp.append(i)
+    tmp.append(j)
     print(i.getGenotypeDecimal())
     print(j.getGenotypeDecimal())
     print('------')
+pop.individuals= pop.individuals+tmp
 
+print('- Test survivors')
+pop.survivalSelect(10)
 
+print('Indivduals selected by fitness')
+for ind in pop.individuals:
+    print(ind.getGenotypeDecimal(), '->',ind.fitness())
+print(len(pop.individuals))
 print('- Test local crossover function')
 pop.setCrossoverFunct(cutAndCross)
 for ind1,ind2 in pop.parentsSelectionFunction():
