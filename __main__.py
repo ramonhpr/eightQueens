@@ -1,5 +1,5 @@
 from util.Population import Population
-import config
+import util.config as config
 
 def cutAndCross():
 	pass

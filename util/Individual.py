@@ -2,6 +2,7 @@
 # Individual.py
 #
 
+import util.config as config
 from random import randint
 
 class Individual:
@@ -111,7 +112,7 @@ class Individual:
 		#positions to be found
 		pos1, pos2 = 0, 0
 		# compute chances of mutation
-		if(randint(1,10) < (MUTATION_PROB * 10)):
+		if(randint(1,10) < (config.MUTATION_PROB * 10)):
 			# pickup two different numbers to mutate in genotype
 			while(pos1==pos2):
 				pos1 = randint(0,7)
