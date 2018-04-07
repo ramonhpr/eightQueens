@@ -39,8 +39,21 @@ class Population:
 		choice which crossover function use
 		"""
 		self.crossoverFunction = func
+
 	def crossover(self, *args, **kwargs):
 		return self.crossoverFunction(*args, **kwargs)
+
+	def setParentsSelectionFunct(self, func):
+		"""
+		Set the parents selection function passed, so the user
+		can choose which function to use.
+		"""
+		self.parentsSelectionFunction = func
+
+	def parentsSelection(self, *args, **kwargs):
+		"""
+		"""
+		return self.parentsSelectionFunction(*args, **kwargs)
 
 	def __recombine(self, ind, stackHead, stackTail):
 		"""

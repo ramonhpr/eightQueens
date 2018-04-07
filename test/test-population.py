@@ -1,8 +1,16 @@
-import os,sys,inspect
+#
+# test-population.py
+#
+
+import os
+import sys
+import inspect
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
+import util.roulette
 from util.Population import Population
 from util.Individual import Individual
 
@@ -65,3 +73,19 @@ for ind1,ind2 in pop.parentsSelectionFunction():
     print(i.getGenotypeDecimal())
     print(j.getGenotypeDecimal())
     print('------')
+
+# Test roulette wheel selection.
+print("\n- Test Roulette Wheel Selection \n")
+parents = util.roulette.parents(pop.individuals)
+# Breed individuals selected through the roulette wheel.
+for ind1, ind2 in parents:
+    print("Parents selected:")
+    print(ind1.getGenotypeDecimal())
+    print(ind2.getGenotypeDecimal())
+    print("New Individuals:")
+    i, j = pop.crossover(ind1, ind2)
+    print(i.getGenotypeDecimal())
+    print(j.getGenotypeDecimal())
+    print("")
+
+
