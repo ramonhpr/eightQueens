@@ -137,8 +137,10 @@ class Individual:
 		if(randint(1,10) < (config.MUTATION_PROB * 10)):
 			# pickup two different numbers to mutate in genotype
 			while(pos1==pos2):
-				pos1 = randint(0,7)
-				pos2 = randint(0,7)
+				pos1 = randint(1,self.getGeneNum())
+				pos2 = randint(1,self.getGeneNum())
 			# swap the first and second gene in genotype
-			self.genotype[pos1],self.genotype[pos2]=self.genotype[pos2],self.genotype[pos1]
-		
+			aux = self.getGene(pos1)
+			self.setGene(pos1, self.getGene(pos2))
+			self.setGene(pos2,aux)
+
