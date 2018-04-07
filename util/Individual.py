@@ -56,7 +56,7 @@ class Individual:
 		"""
 		Calculate the fitness for the individual
 		"""
-		return self.fitnessFunc(*args,**kwargs)
+		return self.fitnessFunc(self, *args, **kwargs)
 
 	def setMutationFunc(self, mutationFunc):
 		self.mutationFunc = mutationFunc

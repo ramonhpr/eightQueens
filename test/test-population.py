@@ -10,6 +10,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
+import util.fitness
 import util.roulette
 from util.Population import Population
 from util.Individual import Individual
@@ -87,5 +88,18 @@ for ind1, ind2 in parents:
     print(i.getGenotypeDecimal())
     print(j.getGenotypeDecimal())
     print("")
+
+#...
+print("\n- Test Fitness Method SumAll")
+# ...
+print("Ordinary:")
+for ind in pop.individuals:
+    print(ind.fitness())
+# ...
+pop.setFitnessFunc(util.fitness.sumall)
+# ...
+print("SumAll:")
+for ind in pop.individuals:
+    print(ind.fitness())
 
 

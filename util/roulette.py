@@ -1,5 +1,5 @@
 #
-# RouletteWheenSelection.py
+# roulette.py
 #
 
 import random
