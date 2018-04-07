@@ -116,9 +116,31 @@ class Population:
 		if(random.randint(1, 10) < (config.RECOMBINATION_PROB * 10)):
 			newInd1 = self.__recombine(ind1, firstSlice2, lastSlice2)
 			newInd2 = self.__recombine(ind2, firstSlice1, lastSlice1)
+			print('crossover - fitness indv1 ',newInd1.fitness(),newInd1.getGenotypeDecimal())
+			print('crossover - fitness indv2 ',newInd2.fitness(),newInd2.getGenotypeDecimal())
 			return (newInd1, newInd2)
 		else:
 			return (None, None)
+
+
+	def basicCrossoverFunction(self, ind1, ind2):
+		firstSlice1 = []
+		firstSlice2 = []
+		lastSlice1 = []
+		lastSlice2 = []
+		for i in range(1,4):
+			firstSlice1.append(ind1.getGene(i))
+			firstSlice2.append(ind2.getGene(i))
+		for i in range(4,int(ind1.getGeneNum())+1):
+			lastSlice1.append(ind1.getGene(i))
+			lastSlice2.append(ind2.getGene(i))
+
+		newInd1 = firstSlice1
+		newInd1 = newInd1 + lastSlice2
+		newInd2 = firstSlice2
+		newInd2 = newInd2 + lastSlice1
+
+		return (newInd1, newInd2)
 
 	def __defaultParentsSelectionFunction(self):
 		# The default parents selection method is based on picking
@@ -128,6 +150,7 @@ class Population:
 		couples = []
 		indvs = list(self.individuals)
 		# Distribute individuals and place the top two together.
+		'''
 		while len(indvs) > 0:
 			candidates = []
 			for i in range(5):
@@ -136,6 +159,18 @@ class Population:
 				indvs.remove(ind)
 			candidates.sort(key=lambda x: x.fitness(), reverse=True)
 			couples.append([candidates[0], candidates[1]])
+		'''
+		indvs.sort(key=lambda x: x.fitness(), reverse=True)
+		i=1
+
+		while(indvs[0]==indvs[i]):
+			i = i+1
+			if(i==len(indvs)):
+				i=1
+				break
+
+		couples.append([indvs[0], indvs[i]])
+		
 		return couples
 
 	def __defaultSurvivalSelectFunction(self, numSurvivals=config.NUM_INDIVIDUALS):
@@ -144,8 +179,9 @@ class Population:
 		"""
 		# Sort individuals by fitness
 		self.individuals.sort(key=methodcaller('fitness'), reverse=True)
-		if len(self.individuals) > numSurvivals:
+		if len(self.individuals) >= numSurvivals:
 			for i in range(len(self.individuals)-numSurvivals):
-				self.individuals.pop()
+				print('survivalselect ',self.individuals.pop().getGenotypeDecimal())
+
 		else:
 			raise Exception('Your population is smaller than your settings. You probably do not run the crossover')
