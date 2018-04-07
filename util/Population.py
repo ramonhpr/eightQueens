@@ -54,6 +54,10 @@ class Population:
 		"""
 		self.parentsSelectionFunction = func
 
+	def mutate(self):
+		for ind in self.individuals:
+			ind.mutation()
+
 	def parentsSelection(self, *args, **kwargs):
 		"""
 		"""
