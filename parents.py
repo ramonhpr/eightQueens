@@ -1,9 +1,11 @@
 #
-# roulette.py
+# parents.py
 #
 
 import random
+import fitness
 
+# ...
 def roulette(population, sum):
     i = 0
     q = 0
@@ -18,10 +20,30 @@ def roulette(population, sum):
         i += 1
     return population[w]
 
-def parents(population, parentsPerFamily=2, repeatParents=0):
+# ...
+def selectParentsBestTwoOutOfFive(population=[], fitnesses=[]):
+	# The default parents selection method is based on picking
+	# five individuals randomically and then selecting the two
+	# most qualified (higher fitness) to breed. This method will
+	# return a list containing lists of two individuals.
+	couples = []
+	indvs = list(population)
+	# Distribute individuals and place the top two together.
+	while len(indvs) > 0:
+		candidates = []
+		for i in range(5):
+			ind = random.choice(indvs)
+			candidates.append(ind)
+			indvs.remove(ind)
+		candidates.sort(key=lambda x: fitnesses[population.index(x)], reverse=True)
+		couples.append([candidates[0], candidates[1]])
+	return couples
+
+# ...
+def selectParentsRoulette(population=[], parentsPerFamily=2, repeatParents=0):
     p = []
     sum = 0
-    # We make a copy of the original population in order to 
+    # We make a copy of the original population in order to
     # simplify the selection of unrepeated random individuals,
     # it is basically a implementation convenience.
     population = list(population)
