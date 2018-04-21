@@ -19,11 +19,12 @@ def naiveImplementation(maximumFitnessEvaluations=10000):
 	fitnessEvaluationsCount = 100
 
 	# Generate the initial population.
-	p = population.generateRanomBinaryPopulation(individualsCount=100, individualsLength=24)
+	p = population.generateRanomBinaryPopulationUniqueGenes(individualsCount=100)
 	# Compute individuals fitnesses.
 	f = [fitness.fitnessNaive(x) for x in p]
 
 	while (fitnessEvaluationsCount < maximumFitnessEvaluations):
+	#while (f[99] != 8):
 
 		# Algorithm evaluation.
 		iteration += 1
@@ -43,7 +44,7 @@ def naiveImplementation(maximumFitnessEvaluations=10000):
 		f = f + k
 		# Mutate.
 		for i in range(len(p)):
-			p[i] = mutation.mutationSimple(individual=p[i], genesCount=8, mutationProbability=0.4)
+			p[i] = mutation.mutationSwapTwo(individual=p[i], genesCount=8, mutationProbability=0.4)
 			f[i] = fitness.fitnessNaive(p[i])
 			fitnessEvaluationsCount += 1
 		# Sort individuals by their fitnesses.
@@ -53,6 +54,10 @@ def naiveImplementation(maximumFitnessEvaluations=10000):
 		# Remove worst individuals from population.
 		p = list(p[:100])
 		f = list(f[:100])
+
+		#foo = [float(x) for x in f]
+		#fuck = statistics.mean(foo)
+		#print(fuck)
 
 	# Calculate metrics.
 	aux = [float(x) for x in f]
