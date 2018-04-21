@@ -34,13 +34,20 @@ def crossoverCutAndCrossFill(couples=[], genesCount=8, recombinationProbability=
 					child1.append(parent2[index2])
 				index1 += 1
 				index2 += 1
+			# Transform childs genes to their binary representation.
+			child1 = [conveniences.decimalToBinaryString(num=x, expectedLength=3) for x in child1]
+			child1 = [item for sublist in child1 for item in sublist]
+			child1 = [int(x) for x in child1]
+			child2 = [conveniences.decimalToBinaryString(num=x, expectedLength=3) for x in child2]
+			child2 = [item for sublist in child2 for item in sublist]
+			child2 = [int(x) for x in child2]
 			# Append childs.
 			childs.append(child1)
 			childs.append(child2)
 	return childs
 
-# Default crossover, cut and crossfill method (WRONG).
-def crossoverCutAndCrossFillWrong(couples=[], genesCount=8, recombinationProbability=0.9):
+# Cut and crossfill method simplified (doesn't check for duplicates).
+def crossoverCutAndCrossFillSimplified(couples=[], genesCount=8, recombinationProbability=0.9):
 	childs = []
 	recombinationProbability *= 100
 	for couple in couples:
