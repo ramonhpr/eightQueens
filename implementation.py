@@ -10,7 +10,103 @@ import population
 import conveniences
 import recombination
 
-def implementationWrapper(implementationFunction, times=30):
+def implementation(
+		generatePopulationFunction,
+		maxFitness,
+		fitnessFunction,
+		parentsSelectionFunction,
+		recombinationFunction,
+		mutationFunction,
+		nQueens=8,
+		numberOfIndividuals=100,
+		recombinationProbability=0.9,
+		mutationProbability=0.4,
+		maximumFitnessEvaluations=10000,
+	):
+	# Metrics.
+	iteration = 0
+	foundSolution = False
+	firstSolutionAtIteration = 0
+	fitnessEvaluationsCount = numberOfIndividuals
+	# Generate the initial population.
+	p = generatePopulationFunction(individualsCount=numberOfIndividuals)
+	# Compute individuals fitnesses.
+	f = [fitnessFunction(x) for x in p]
+	while (fitnessEvaluationsCount < maximumFitnessEvaluations):
+		# Algorithm evaluation.
+		iteration += 1
+		if foundSolution == False and f[0] == maxFitness:
+			foundSolution = True
+			firstSolutionAtIteration = iteration
+		# Select couples to breed.
+		c = parentsSelectionFunction(population=p, fitnesses=f)
+		# Recombine couples (breed).
+		n = recombinationFunction(c, genesCount=nQueens, recombinationProbability=recombinationProbability)
+		# Calculate childs fitnesses.
+		k = [fitnessFunction(x) for x in n]
+		fitnessEvaluationsCount += len(n)
+		# Merge childs with their parents and, also, their fitnesses.
+		p = p + n
+		f = f + k
+		# Mutate.
+		for i in range(len(p)):
+			p[i] = mutationFunction(individual=p[i], genesCount=nQueens, mutationProbability=mutationProbability)
+			f[i] = fitnessFunction(p[i])
+			fitnessEvaluationsCount += 1
+		# Sort individuals by their fitnesses.
+		z = zip(p, f)
+		z.sort(key=lambda x: x[1], reverse=True)
+		p, f = zip(*z)
+		# Remove worst individuals from population.
+		p = list(p[:numberOfIndividuals])
+		f = list(f[:numberOfIndividuals])
+	# Calculate metrics.
+	aux = [float(x) for x in f]
+	averageFitness = statistics.mean(aux)
+	fitnessStardardDeviation = statistics.stddev(aux)
+	convergencesCount = sum(x == maxFitness for x in f)
+	# Return metrics packed in a dictionary.
+	metrics = {
+		'foundSolution': foundSolution,
+		'firstSolutionFoundAtIteration': firstSolutionAtIteration,
+		'numberOfConvergences': convergencesCount,
+		'averageFitness': averageFitness,
+	}
+	return metrics
+
+def dumbImplementation(nQueens=8, maximumFitnessEvaluations=10000):
+
+	return implementation(
+		generatePopulationFunction=population.generateRanomBinaryPopulation,
+		maxFitness=fitness.fitnessNaiveMaxFitness(),
+		fitnessFunction=fitness.fitnessNaive,
+		parentsSelectionFunction=parents.selectParentsBestTwoOutOfFive,
+		recombinationFunction=recombination.crossoverCutAndCrossFillSimplified,
+		mutationFunction=mutation.mutationRandomGene,
+		nQueens=8,
+		numberOfIndividuals=100,
+		recombinationProbability=0.9,
+		mutationProbability=0.4,
+		maximumFitnessEvaluations=maximumFitnessEvaluations,
+	)
+
+def naiveImplementation(nQueens=8, maximumFitnessEvaluations=10000):
+
+	return implementation(
+		generatePopulationFunction=population.generateRanomBinaryPopulationUniqueGenes,
+		maxFitness=fitness.fitnessSumAllMaxFitness(),
+		fitnessFunction=fitness.fitnessSumAll,
+		parentsSelectionFunction=parents.selectParentsBestTwoOutOfFive,
+		recombinationFunction=recombination.crossoverCutAndCrossFill,
+		mutationFunction=mutation.mutationSwapTwo,
+		nQueens=8,
+		numberOfIndividuals=100,
+		recombinationProbability=0.9,
+		mutationProbability=0.4,
+		maximumFitnessEvaluations=maximumFitnessEvaluations,
+	)
+
+def implementationWrapper(implementationFunction, nQueens=8, times=30):
 	# Auxiliaries.
 	success = 0
 	convergencesIteration = []
@@ -19,7 +115,7 @@ def implementationWrapper(implementationFunction, times=30):
 	# Execute the naive algorithm multiple times and calculate averages.
 	for i in range(times):
 	    # Run algorithm implementation.
-	    metrics = implementationFunction(maximumFitnessEvaluations=10000)
+	    metrics = implementationFunction(nQueens=nQueens, maximumFitnessEvaluations=10000)
 	    foundSolution = metrics['foundSolution']
 	    firstSolutionFoundAtIteration = metrics['firstSolutionFoundAtIteration']
 	    numberOfConvergences = metrics['numberOfConvergences']
@@ -55,107 +151,3 @@ def implementationWrapper(implementationFunction, times=30):
 	print('4. Fitness medio alcancado?')
 	print('   Media: ' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
-
-def naiveImplementation(maximumFitnessEvaluations=10000):
-
-	# Definitions.
-	generatePopulationFunction = population.generateRanomBinaryPopulationUniqueGenes
-	maxFitness = fitness.fitnessNaiveMaxFitness()
-	fitnessFunction = fitness.fitnessNaive
-	parentsSelectionFunction = parents.selectParentsBestTwoOutOfFive
-	recombinationFunction = recombination.crossoverCutAndCrossFill
-	mutationFunction = mutation.mutationSwapTwo
-
-	# Metrics.
-	iteration = 0
-	foundSolution = False
-	firstSolutionAtIteration = 0
-	fitnessEvaluationsCount = 100
-
-	# Generate the initial population.
-	p = generatePopulationFunction(individualsCount=100)
-	# Compute individuals fitnesses.
-	f = [fitnessFunction(x) for x in p]
-
-	while (fitnessEvaluationsCount < maximumFitnessEvaluations):
-	#while (f[99] != maxFitness):
-
-		# Algorithm evaluation.
-		iteration += 1
-		if foundSolution == False and f[0] == maxFitness:
-			foundSolution = True
-			firstSolutionAtIteration = iteration
-
-		# Select couples to breed.
-		c = parentsSelectionFunction(population=p, fitnesses=f)
-		# Recombine couples (breed).
-		n = recombinationFunction(c, genesCount=8, recombinationProbability=0.9)
-		# Calculate childs fitnesses.
-		k = [fitnessFunction(x) for x in n]
-		fitnessEvaluationsCount += len(n)
-		# Merge childs with their parents and, also, their fitnesses.
-		p = p + n
-		f = f + k
-		# Mutate.
-		for i in range(len(p)):
-
-			mp = 0.4 #(0.4 * (1 - (f[i] / float(maxFitness))) ) + 0.1
-
-			p[i] = mutationFunction(individual=p[i], genesCount=8, mutationProbability=mp)
-			f[i] = fitnessFunction(p[i])
-			fitnessEvaluationsCount += 1
-
-		# Sort individuals by their fitnesses.
-		z = zip(p, f)
-		z.sort(key=lambda x: x[1], reverse=True)
-		p, f = zip(*z)
-		# Remove worst individuals from population.
-		p = list(p[:100])
-		f = list(f[:100])
-
-		'''
-		fucks = 0
-		for fit in f:
-			fucks += 1 if fit == maxFitness else 0
-		print(fucks)
-		#'''
-
-	# Calculate metrics.
-	aux = [float(x) for x in f]
-	averageFitness = statistics.mean(aux)
-	fitnessStardardDeviation = statistics.stddev(aux)
-	convergencesCount = sum(x == maxFitness for x in f)
-
-	metrics = {
-		'foundSolution': foundSolution,
-		'firstSolutionFoundAtIteration': firstSolutionAtIteration,
-		'numberOfConvergences': convergencesCount,
-		'averageFitness': averageFitness,
-	}
-
-	'''
-	print("Iterations count: " + str(iteration))
-	print("Fitness evaluations count: " + str(fitnessEvaluationsCount))
-	print("Average fitness: " + str(averageFitness))
-	print("Fitness standard deviation: " + str(fitnessStardardDeviation))
-	print("Found solution: " + str(foundSolution))
-	print("Number of convergences: " + str(convergencesCount))
-	if foundSolution:
-		print("First solution found at iteration: " + str(firstSolutionAtIteration))
-	#'''
-
-	'''
-	print("")
-	solutions = []
-	aux = [conveniences.binaryToDecimal(x) for x in p]
-	for item in aux:
-		txt = ""
-		for subitem in item:
-			txt += (str(subitem) + " ")
-		solutions.append(txt)
-	solutions = list(set(solutions))
-	for solution in solutions:
-		print(solution)
-	#'''
-
-	return metrics

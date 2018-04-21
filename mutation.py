@@ -5,7 +5,7 @@
 import random
 
 # Mutates a single gene (can lead to repetitive positions).
-def mutationRandomizeGene(individual=[], genesCount=8, mutationProbability=0.4):
+def mutationRandomGene(individual=[], genesCount=8, mutationProbability=0.4):
 	# Check if the mutation should occur.
 	mutationProbability *= 100
 	mutationChance = random.randint(1, 100)
