@@ -3,5 +3,15 @@
 #
 
 import implementation
+import statistics
 
-implementation.naiveImplementation(maximumFitnessEvaluations=10000)
+
+print('')
+print('##################################################')
+print('############## IMPLEMENTACAO BASICA ##############')
+print('##################################################')
+
+implementation.implementationWrapper(implementationFunction=implementation.naiveImplementation, times=10)
+
+print('##################################################')
+print('')

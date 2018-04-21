@@ -9,7 +9,7 @@ def mutationRandomizeGene(individual=[], genesCount=8, mutationProbability=0.4):
 	# Check if the mutation should occur.
 	mutationProbability *= 100
 	mutationChance = random.randint(1, 100)
-	if mutationChance < mutationProbability:
+	if mutationChance > mutationProbability:
 		return individual
 	# Randomically select a gene index.
 	geneIndex = random.randint(0, genesCount-1)
@@ -25,7 +25,7 @@ def mutationSwapTwo(individual=[], genesCount=8, mutationProbability=0.4):
 	# Check if the mutation should occur.
 	mutationProbability *= 100
 	mutationChance = random.randint(1, 100)
-	if mutationChance < mutationProbability:
+	if mutationChance > mutationProbability:
 		return individual
 	# Randomically select a gene index.
 	geneIndex1 = random.randint(0, genesCount-1)

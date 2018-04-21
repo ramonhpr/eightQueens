@@ -4,6 +4,10 @@
 
 import conveniences
 
+# Returns the maximum fitness calculated by the fitnessNaive() method.
+def fitnessNaiveMaxFitness():
+	return 8
+
 # The fitness is equal to the number of queens in valid spots.
 # Loop through each queen position (row assignment).
 def fitnessNaive(individualBinaryString):
@@ -19,6 +23,10 @@ def fitnessNaive(individualBinaryString):
 			collisions += ((sameRow == 1 or onDiagonal == 1) and (jx != j));
 		f += (collisions == 0);
 	return f
+
+# Returns the maximum fitness calculated by the fitnessSumAll() method.
+def fitnessSumAllMaxFitness():
+	return 56
 
 # The fitness is equal to the number of queens that don't
 # interfere in anothers position (the base queen).
