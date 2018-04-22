@@ -6,21 +6,6 @@ import random
 import fitness
 
 # ...
-def roulette(population, sum):
-    i = 0
-    q = 0
-    w = random.randint(1, sum)
-    # Find the individual associated to the randomized range.
-    while i < len(population):
-        u = (population[i].fitness() + q + 1)
-        if w > q and w <= u:
-            w = i
-            i = len(population)
-        q = u
-        i += 1
-    return population[w]
-
-# ...
 def selectParentsBestTwoOutOfFive(population=[], fitnesses=[]):
 	# The default parents selection method is based on picking
 	# five individuals randomically and then selecting the two
@@ -40,29 +25,45 @@ def selectParentsBestTwoOutOfFive(population=[], fitnesses=[]):
 	return couples
 
 # ...
-def selectParentsRoulette(population=[], parentsPerFamily=2, repeatParents=0):
+def roulette(population, fitnesses, sum):
+    i = 0
+    q = 0
+    w = random.randint(1, sum)
+    # Find the individual associated to the randomized range.
+    while i < len(population):
+        u = (fitnesses[i] + q + 1)
+        if w > q and w <= u:
+            w = i
+            i = len(population)
+        q = u
+        i += 1
+    return w
+
+# ...
+def selectParentsRoulette(population=[], fitnesses=[]):
     p = []
     sum = 0
     # We make a copy of the original population in order to
     # simplify the selection of unrepeated random individuals,
     # it is basically a implementation convenience.
     population = list(population)
+    fitnesses = list(fitnesses)
     # The roulette wheel selection model gives each individual
     # a chance of being selected that is proportional to its
     # fitness. We randomize a number between 1 and the sum of
     # every individual fitness in order to grant proportional
     # changes. Then, select the individual associated to the
     # random fitness range.
-    for individual in population:
-        sum += (individual.fitness() + 1)
+    for fitness in fitnesses:
+        sum += (fitness + 1)
     # Distribute individuals among families.
     while len(population) > 1:
         f = []
-        for i in range(parentsPerFamily):
-            k = roulette(population, sum)
-            sum -= (k.fitness() + 1)
-            f.append(k)
-            if repeatParents == 0:
-                population.remove(k)
+        for i in range(2):
+            index = roulette(population, fitnesses, sum)
+            sum -= (fitnesses[index] + 1)
+            f.append(population[index])
+            population.pop(index)
+            fitnesses.pop(index)
         p.append(f)
     return p

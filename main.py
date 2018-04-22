@@ -4,8 +4,8 @@
 
 import implementation
 
-times = 50
-'''
+times = 30
+
 print('')
 print('##################################################')
 print('############## IMPLEMENTACAO BURRA ###############')
@@ -15,13 +15,23 @@ implementation.implementationWrapper(implementationFunction=implementation.dumbI
 
 print('##################################################')
 print('')
-'''
+
 print('')
 print('##################################################')
 print('############## IMPLEMENTACAO BASICA ##############')
 print('##################################################')
 
 implementation.implementationWrapper(implementationFunction=implementation.naiveImplementation, nQueens=8, times=times)
+
+print('##################################################')
+print('')
+
+print('')
+print('##################################################')
+print('############## IMPLEMENTACAO BASICA ##############')
+print('##################################################')
+
+implementation.implementationWrapper(implementationFunction=implementation.smartImplementation, nQueens=8, times=times)
 
 print('##################################################')
 print('')

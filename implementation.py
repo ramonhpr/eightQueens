@@ -106,6 +106,22 @@ def naiveImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
 	)
 
+def smartImplementation(nQueens=8, maximumFitnessEvaluations=10000):
+
+	return implementation(
+		generatePopulationFunction=population.generateRanomBinaryPopulationUniqueGenes,
+		maxFitness=fitness.fitnessSumAllMaxFitness(),
+		fitnessFunction=fitness.fitnessSumAll,
+		parentsSelectionFunction=parents.selectParentsRoulette,
+		recombinationFunction=recombination.crossoverCutAndCrossFill,
+		mutationFunction=mutation.mutationSwapTwo,
+		nQueens=8,
+		numberOfIndividuals=100,
+		recombinationProbability=0.9,
+		mutationProbability=0.4,
+		maximumFitnessEvaluations=maximumFitnessEvaluations,
+	)
+
 def implementationWrapper(implementationFunction, nQueens=8, times=30):
 	# Auxiliaries.
 	success = 0
