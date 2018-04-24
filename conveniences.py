@@ -36,3 +36,19 @@ def binaryToDecimal(l):
 		s = s[3: ]
 		arr.append(int(tmp,2))
 	return arr
+
+def decimalToBinary(l, expectedLength=3):
+    s = listToStr(l)
+    arr=[]
+    while len(s) > 0:
+        arrAux=[]
+        tmp = int(s[0])
+        s = s[1: ]
+        while (tmp > 0):
+            aux = 0 if (tmp % 2 == 0) else 1
+            arrAux.insert(0,aux)
+            tmp = (tmp // 2)
+        while(len(arrAux) < expectedLength):
+            arrAux.insert(0,0)
+        arr = arr + arrAux
+    return arr
