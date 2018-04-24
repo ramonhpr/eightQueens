@@ -3,8 +3,11 @@
 #
 
 import implementation
+import conveniences
 
 times = 30
+# Remove the files generated to plot
+conveniences.removeOutFiles()
 
 print('')
 print('##################################################')
