@@ -58,12 +58,24 @@ def writeToFile(file, data):
 		fd.write(str(data))
 		fd.write('\n')
 
+def createFolder(name):
+	try:
+		os.mkdir(name)
+	except:
+		pass
+
 # Remove files used to plot graphs
 def removeOutFiles():
 	files = [
 			'iterations.out',
 			'convergency.out',
-			'fitness.out'
+			'fitness.out',
+            'dumbImplementation/average.png',
+            'dumbImplementation/deviation.png',
+            'naiveImplementation/average.png',
+            'naiveImplementation/deviation.png',
+            'smartImplementation/average.png',
+            'smartImplementation/deviation.png',
 			]
 	for file in files:
 		try:

@@ -29,10 +29,14 @@ def implementation(
 	foundSolution = False
 	firstSolutionAtIteration = 0
 	fitnessEvaluationsCount = numberOfIndividuals
+	averageList = []
+	deviationList = []
 	# Generate the initial population.
 	p = generatePopulationFunction(individualsCount=numberOfIndividuals)
 	# Compute individuals fitnesses.
 	f = [fitnessFunction(x) for x in p]
+	averageList.append(statistics.mean([float(x) for x in f]))
+	deviationList.append(statistics.stddev([float(x) for x in f]))
 	while (fitnessEvaluationsCount < maximumFitnessEvaluations):
 		# Algorithm evaluation.
 		iteration += 1
@@ -45,6 +49,8 @@ def implementation(
 		n = recombinationFunction(c, genesCount=nQueens, recombinationProbability=recombinationProbability)
 		# Calculate childs fitnesses.
 		k = [fitnessFunction(x) for x in n]
+		averageList.append(statistics.mean([float(x) for x in f]))
+		deviationList.append(statistics.stddev([float(x) for x in f]))
 		fitnessEvaluationsCount += len(n)
 		# Merge childs with their parents and, also, their fitnesses.
 		p = p + n
@@ -72,6 +78,8 @@ def implementation(
 		'firstSolutionFoundAtIteration': firstSolutionAtIteration,
 		'numberOfConvergences': convergencesCount,
 		'averageFitness': averageFitness,
+		'averageList': averageList,
+		'deviationList': deviationList,
 	}
 	return metrics
 
@@ -137,19 +145,28 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30):
 		firstSolutionFoundAtIteration = metrics['firstSolutionFoundAtIteration']
 		numberOfConvergences = metrics['numberOfConvergences']
 		averageFitness = metrics['averageFitness']
+
+		if i == 0: # just plot one example of execution
+			averageList = metrics['averageList']
+			deviationList = metrics['deviationList']
+			conveniences.createFolder(implementationFunction.__name__)
+
+			plotAvr,fig = plotation.plotList(averageList,'fitness medio por iteracao')
+			plotation.saveImage(implementationFunction.__name__+'/average.png', plotAvr, fig)
+			plotDev, fig = plotation.plotList(deviationList,'desvio padrao do fitness por iteracao')
+			plotation.saveImage(implementationFunction.__name__+'/deviation.png', plotDev, fig)
 		# Update metrics if a solution was found.
 		if foundSolution:
 			# Count the number of executions that converged.
 			success += 1
-			print(metrics)
+			# print(metrics)
 			# Store the iteration in which the algorithm converged, the number of
 			# individuals that converged and the average fitness per execution. We
 			# use this to calculate the mean and stardand deviation.
 			convergencesIteration.append(float(firstSolutionFoundAtIteration))
 			convergencesPerExecution.append(float(numberOfConvergences))
 			averageFitnessPerExecution.append(float(averageFitness))
-	# plotation.plotList(averageFitnessPerExecution, 'Fitness medio')
-	# plotation.show()
+
 	# ...
 	print('1. Em quantas execucoes o algoritmo convergiu?')
 	print('   ' + str(success) + '/' + str(times))

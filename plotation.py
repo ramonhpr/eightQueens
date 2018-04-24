@@ -9,9 +9,16 @@ def plotGaussian(mean, sigma, label, mu=0):
     return p
 
 def plotList(lst, label):
+    f = plt.figure()
     plt.ylabel(label)
-    plt.xlabel('Numero de execucoes')
-    plt.plot(lst)
+    plt.xlabel('Numero de iteracoes')
+    p, = plt.plot(lst, label=label)
+    return p,f
+
+def saveImage(name, p, f):
+    leg = plt.legend(handles=[p],loc=4)
+    ax = plt.gca().add_artist(leg)
+    f.savefig(name)
 
 # Function used to debug because it's blocking
 def show():
@@ -45,7 +52,7 @@ if '__main__' == __name__:
 
     f = plt.figure()
     with open('convergency.out', 'r') as fd:
-        plt.title('individuos convergiram por execucao')
+        plt.title('individuos que convergiram por execucao')
         plotByFile(fd)
     f.savefig('convergency.png')
     f = plt.figure()

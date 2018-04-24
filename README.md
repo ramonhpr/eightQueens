@@ -10,3 +10,6 @@ Use genetic algorithm to solve the problem as a project to CIn UFPE
 ## How to run
 
 `python2 main.py`
+
+## How to plot graphs
+`python2 plotation.py`
