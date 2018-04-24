@@ -68,3 +68,50 @@ def crossoverCutAndCrossFillSimplified(couples=[], genesCount=8, recombinationPr
 			childs.append(childA)
 			childs.append(childB)
 	return childs
+
+def crossoverOrderOne(couples=[], genesCount=8, recombinationProbability=0.9):
+	childs = []
+	recombinationProbability *= 100
+	for couple in couples:
+		breedChance = random.randint(1, 100)
+		if breedChance < recombinationProbability:
+			parent1 = []
+			parent2 = []
+			j = 0
+			k = 0
+			geneSize = (len(couple[0]) // genesCount)
+			subListLength = random.randint(3,4)
+			if subListLength == 3:
+				n = random.randint(0,4)
+			else:
+				n = random.randint(0,3)
+
+			for i in range(genesCount):
+				parent1.append(conveniences.binaryStringToDecimal(couple[0], (i*geneSize), geneSize))
+				parent2.append(conveniences.binaryStringToDecimal(couple[1], (i*geneSize), geneSize))
+
+			child1 = parent1[n:n+subListLength]
+			child2 = parent2[n:n+subListLength]
+
+			for i in range(genesCount): 
+				indexAux = (n + subListLength + i) % 8
+				index1 = (n + subListLength + j) % 8
+				index2 = (n + subListLength + k) % 8
+				if parent2[indexAux] not in child1:
+					child1.insert(index1, parent2[indexAux])
+					j += 1
+				if parent1[indexAux] not in child2:
+					child2.insert(index2, parent1[indexAux])
+					k += 1
+
+			child1 = [conveniences.decimalToBinaryString(num=x, expectedLength=3) for x in child1]
+			child1 = [item for sublist in child1 for item in sublist]
+			child1 = [int(x) for x in child1]
+			child2 = [conveniences.decimalToBinaryString(num=x, expectedLength=3) for x in child2]
+			child2 = [item for sublist in child2 for item in sublist]
+			child2 = [int(x) for x in child2]
+
+			childs.append(child1)
+			childs.append(child2)
+
+	return childs
