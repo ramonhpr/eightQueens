@@ -9,6 +9,7 @@ import statistics
 import population
 import conveniences
 import recombination
+import plotation
 
 def implementation(
 		generatePopulationFunction,
@@ -130,22 +131,25 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30):
 	averageFitnessPerExecution = []
 	# Execute the naive algorithm multiple times and calculate averages.
 	for i in range(times):
-	    # Run algorithm implementation.
-	    metrics = implementationFunction(nQueens=nQueens, maximumFitnessEvaluations=10000)
-	    foundSolution = metrics['foundSolution']
-	    firstSolutionFoundAtIteration = metrics['firstSolutionFoundAtIteration']
-	    numberOfConvergences = metrics['numberOfConvergences']
-	    averageFitness = metrics['averageFitness']
-	    # Update metrics if a solution was found.
-	    if foundSolution:
-	        # Count the number of executions that converged.
-	        success += 1
-	        # Store the iteration in which the algorithm converged, the number of
-	        # individuals that converged and the average fitness per execution. We
-	        # use this to calculate the mean and stardand deviation.
-	        convergencesIteration.append(float(firstSolutionFoundAtIteration))
-	        convergencesPerExecution.append(float(numberOfConvergences))
-	        averageFitnessPerExecution.append(float(averageFitness))
+		# Run algorithm implementation.
+		metrics = implementationFunction(nQueens=nQueens, maximumFitnessEvaluations=10000)
+		foundSolution = metrics['foundSolution']
+		firstSolutionFoundAtIteration = metrics['firstSolutionFoundAtIteration']
+		numberOfConvergences = metrics['numberOfConvergences']
+		averageFitness = metrics['averageFitness']
+		# Update metrics if a solution was found.
+		if foundSolution:
+			# Count the number of executions that converged.
+			success += 1
+			print(metrics)
+			# Store the iteration in which the algorithm converged, the number of
+			# individuals that converged and the average fitness per execution. We
+			# use this to calculate the mean and stardand deviation.
+			convergencesIteration.append(float(firstSolutionFoundAtIteration))
+			convergencesPerExecution.append(float(numberOfConvergences))
+			averageFitnessPerExecution.append(float(averageFitness))
+	# plotation.plotList(averageFitnessPerExecution, 'Fitness medio')
+	# plotation.show()
 	# ...
 	print('1. Em quantas execucoes o algoritmo convergiu?')
 	print('   ' + str(success) + '/' + str(times))
@@ -155,15 +159,23 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30):
 	print('2. Em que iteracao o algoritmo convergiu?')
 	print('   Media:' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
+	conveniences.writeToFile('iterations.out', average)
+	conveniences.writeToFile('iterations.out', deviation)
+	# plotation.plotGaussian(average, deviation, 'iterations')
 	# ...
 	average = statistics.mean(convergencesPerExecution)
 	deviation = statistics.stddev(convergencesPerExecution)
 	print('3. Quantos de individuos convergiram por execucao?')
 	print('   Media:' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
+	conveniences.writeToFile('convergency.out', average)
+	conveniences.writeToFile('convergency.out', deviation)
+	# plotation.plotGaussian(average, deviation, 'convergency')
 	# ...
 	average = statistics.mean(averageFitnessPerExecution)
 	deviation = statistics.stddev(averageFitnessPerExecution)
 	print('4. Fitness medio alcancado?')
 	print('   Media: ' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
+	conveniences.writeToFile('fitness.out', average)
+	conveniences.writeToFile('fitness.out', deviation)

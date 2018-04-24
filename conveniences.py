@@ -1,7 +1,7 @@
 #
 # conveniences.py
 #
-
+import os
 # Converts a portion of a binary string to a decimal.
 def binaryStringToDecimal(string, i, length):
     num = 0
@@ -52,3 +52,21 @@ def decimalToBinary(l, expectedLength=3):
             arrAux.insert(0,0)
         arr = arr + arrAux
     return arr
+# Write a data in the file especified
+def writeToFile(file, data):
+	with open(file,'a') as fd:
+		fd.write(str(data))
+		fd.write('\n')
+
+# Remove files used to plot graphs
+def removeOutFiles():
+	files = [
+			'iterations.out',
+			'convergency.out',
+			'fitness.out'
+			]
+	for file in files:
+		try:
+			os.remove(file)
+		except:
+			pass
