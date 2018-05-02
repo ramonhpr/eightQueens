@@ -11,8 +11,6 @@ import conveniences
 import recombination
 import plotation
 
-import matplotlib.pyplot as plot
-
 def implementation(
 		initialPopulation,
 		maxFitness,
@@ -183,41 +181,23 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30, numberOfC
 
 	# Find the execution whose average fitness was closer to the all time average.
 	#averageFitness = statistics.mean(averageFitnessPerExecution)
+	#averageFitness = 56
 	#closestExecutionIndex = statistics.closestValueToAverage(averageFitnessPerExecution, averageFitness)
 
 	# Find the execution whose average iteration of convergence was closer to the all time average.
 	averageConvergenceIteration = statistics.mean(convergencesIteration)
+	#averageConvergenceIteration = max(convergencesIteration)
+	#averageConvergenceIteration = min(convergencesIteration)
 	closestExecutionIndex = statistics.closestValueToAverage(convergencesIteration, averageConvergenceIteration)
 
 	# Create a folder to place the graphs.
-	conveniences.createFolder('results')
+	#conveniences.createFolder('results')
 
 	# Prepare data to generate the graph.
-	fileBaseName = "results/"+(implementationFunction.__name__).lower()
+	#fileBaseName = "results/"+(implementationFunction.__name__).lower()
 	e = fitnessDeviationPerIterationPerExecution[closestExecutionIndex]
 	y = averageFitnesPerIterationPerExecution[closestExecutionIndex]
 	x = [x for x in range(len(y))]
-
-	# Error bar graph (fitness and standard deviation).
-	# plot.figure()
-	# plot.errorbar(x, y, e, linestyle='None', marker='^')
-	# plot.show()
-
-	# Average fitness graph.
-	plot.figure()
-	plot.plot(x, y, "s-")
-	plot.title("Average fitness per iteration.")
-	plot.xlabel("Iteration")
-	plot.ylabel("Average Fitness")
-	plot.savefig((fileBaseName+"-average-fitness.png"), bbox_inches="tight")
-
-	# Standard deviation graph.
-	plot.figure()
-	plot.plot(x, e, "o-")
-	plot.title("Standard deviation per iteration.")
-	plot.xlabel("Iteration")
-	plot.ylabel("Fitness Standard Deviation")
-	plot.savefig((fileBaseName+"-standard-deviation.png"), bbox_inches="tight")
 
 	#implementationFunction.__name__
 	#plotAvr,fig = plotation.plotList(averageList,'fitness medio por iteracao')
@@ -255,3 +235,5 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30, numberOfC
 	print('   Desvio Padrao:' + str(deviation))
 	#conveniences.writeToFile('fitness.out', average)
 	#conveniences.writeToFile('fitness.out', deviation)
+
+	return x, y, e
