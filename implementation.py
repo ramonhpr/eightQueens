@@ -14,7 +14,7 @@ import plotation
 import matplotlib.pyplot as plot
 
 def implementation(
-		generatePopulationFunction,
+		initialPopulation,
 		maxFitness,
 		fitnessFunction,
 		parentsSelectionFunction,
@@ -22,7 +22,7 @@ def implementation(
 		mutationFunction,
 		nQueens=8,
 		numberOfIndividuals=100,
-		numberOfCouples=2,
+		numberOfCouples=1,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=10000,
@@ -35,7 +35,7 @@ def implementation(
 	averageFitnessPerIteration = []
 	fitnessDeviationPerIteration = []
 	# Generate the initial population.
-	p = generatePopulationFunction(individualsCount=numberOfIndividuals)
+	p = initialPopulation
 	# Compute individuals fitnesses.
 	f = [fitnessFunction(x) for x in p]
 	# Run until the maximum number of fitness evaluations is reached.
@@ -91,10 +91,10 @@ def implementation(
 	}
 	return metrics
 
-def dumbImplementation(nQueens=8, maximumFitnessEvaluations=10000):
+def dumbImplementation(nQueens=8, maximumFitnessEvaluations=10000, numberOfCouples=1, population=[]):
 
 	return implementation(
-		generatePopulationFunction=population.generateRanomBinaryPopulation,
+		initialPopulation=population,
 		maxFitness=fitness.fitnessNaiveMaxFitness(),
 		fitnessFunction=fitness.fitnessNaive,
 		parentsSelectionFunction=parents.selectParentsBestTwoOutOfFive,
@@ -102,16 +102,16 @@ def dumbImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		mutationFunction=mutation.mutationRandomGene,
 		nQueens=8,
 		numberOfIndividuals=100,
-		numberOfCouples=1,
+		numberOfCouples=numberOfCouples,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
 	)
 
-def naiveImplementation(nQueens=8, maximumFitnessEvaluations=10000):
+def naiveImplementation(nQueens=8, maximumFitnessEvaluations=10000, numberOfCouples=1, population=[]):
 
 	return implementation(
-		generatePopulationFunction=population.generateRanomBinaryPopulationUniqueGenes,
+		initialPopulation=population,
 		maxFitness=fitness.fitnessSumAllMaxFitness(),
 		fitnessFunction=fitness.fitnessSumAll,
 		parentsSelectionFunction=parents.selectParentsBestTwoOutOfFive,
@@ -119,16 +119,16 @@ def naiveImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		mutationFunction=mutation.mutationSwapTwo,
 		nQueens=8,
 		numberOfIndividuals=100,
-		numberOfCouples=1,
+		numberOfCouples=numberOfCouples,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
 	)
 
-def smartImplementation(nQueens=8, maximumFitnessEvaluations=10000):
+def smartImplementation(nQueens=8, maximumFitnessEvaluations=10000, numberOfCouples=1, population=[]):
 
 	return implementation(
-		generatePopulationFunction=population.generateRanomBinaryPopulationUniqueGenes,
+		initialPopulation=population,
 		maxFitness=fitness.fitnessSumAllMaxFitness(),
 		fitnessFunction=fitness.fitnessSumAll,
 		parentsSelectionFunction=parents.selectParentsRoulette,
@@ -136,13 +136,13 @@ def smartImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		mutationFunction=mutation.mutationDisturbance,
 		nQueens=8,
 		numberOfIndividuals=100,
-		numberOfCouples=1,
+		numberOfCouples=numberOfCouples,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
 	)
 
-def implementationWrapper(implementationFunction, nQueens=8, times=30):
+def implementationWrapper(implementationFunction, nQueens=8, times=30, numberOfCouples=1, populations=[]):
 	# Auxiliaries.
 	success = 0
 	convergencesIteration = []
@@ -153,7 +153,12 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30):
 	# Execute the naive algorithm multiple times and calculate averages.
 	for i in range(times):
 		# Run algorithm implementation.
-		metrics = implementationFunction(nQueens=nQueens, maximumFitnessEvaluations=10000)
+		metrics = implementationFunction(
+			nQueens=nQueens,
+			maximumFitnessEvaluations=10000,
+			numberOfCouples=numberOfCouples,
+			population=populations[i]
+			)
 		foundSolution = metrics['foundSolution']
 		firstSolutionFoundAtIteration = metrics['firstSolutionFoundAtIteration']
 		numberOfConvergences = metrics['numberOfConvergences']
