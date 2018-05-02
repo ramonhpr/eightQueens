@@ -11,6 +11,8 @@ import conveniences
 import recombination
 import plotation
 
+import matplotlib.pyplot as plot
+
 def implementation(
 		generatePopulationFunction,
 		maxFitness,
@@ -20,6 +22,7 @@ def implementation(
 		mutationFunction,
 		nQueens=8,
 		numberOfIndividuals=100,
+		numberOfCouples=2,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=10000,
@@ -29,37 +32,42 @@ def implementation(
 	foundSolution = False
 	firstSolutionAtIteration = 0
 	fitnessEvaluationsCount = numberOfIndividuals
-	averageList = []
-	deviationList = []
+	averageFitnessPerIteration = []
+	fitnessDeviationPerIteration = []
 	# Generate the initial population.
 	p = generatePopulationFunction(individualsCount=numberOfIndividuals)
 	# Compute individuals fitnesses.
 	f = [fitnessFunction(x) for x in p]
-	averageList.append(statistics.mean([float(x) for x in f]))
-	deviationList.append(statistics.stddev([float(x) for x in f]))
+	# Run until the maximum number of fitness evaluations is reached.
 	while (fitnessEvaluationsCount < maximumFitnessEvaluations):
-		# Algorithm evaluation.
 		iteration += 1
-		if foundSolution == False and f[0] == maxFitness:
-			foundSolution = True
-			firstSolutionAtIteration = iteration
+		# Algorithm evaluation.
+		if foundSolution == False:
+			# Store the average fitness and standard deviation (first generation).
+			aux = [float(x) for x in f]
+			averageFitnessPerIteration.append(statistics.mean(aux))
+			fitnessDeviationPerIteration.append(statistics.stddev(aux))
+			# Check if a solution was found.
+			if f[0] == maxFitness:
+				foundSolution = True
+				firstSolutionAtIteration = iteration
+				break
 		# Select couples to breed.
-		c = parentsSelectionFunction(population=p, fitnesses=f)
+		c = parentsSelectionFunction(population=p, fitnesses=f, maxCouples=numberOfCouples)
 		# Recombine couples (breed).
-		n = recombinationFunction(c, genesCount=nQueens, recombinationProbability=recombinationProbability)
+		n = recombinationFunction(nQueens=nQueens, couples=c, recombinationProbability=recombinationProbability)
 		# Calculate childs fitnesses.
 		k = [fitnessFunction(x) for x in n]
-		averageList.append(statistics.mean([float(x) for x in f]))
-		deviationList.append(statistics.stddev([float(x) for x in f]))
 		fitnessEvaluationsCount += len(n)
-		# Merge childs with their parents and, also, their fitnesses.
+		# Combine childs and their parents, also, combine their fitnesses.
 		p = p + n
 		f = f + k
 		# Mutate.
 		for i in range(len(p)):
-			p[i] = mutationFunction(individual=p[i], genesCount=nQueens, mutationProbability=mutationProbability)
-			f[i] = fitnessFunction(p[i])
-			fitnessEvaluationsCount += 1
+			p[i], performed = mutationFunction(individual=p[i], genesCount=nQueens, mutationProbability=mutationProbability)
+			if performed == True:
+				f[i] = fitnessFunction(p[i])
+				fitnessEvaluationsCount += 1
 		# Sort individuals by their fitnesses.
 		z = zip(p, f)
 		z.sort(key=lambda x: x[1], reverse=True)
@@ -78,8 +86,8 @@ def implementation(
 		'firstSolutionFoundAtIteration': firstSolutionAtIteration,
 		'numberOfConvergences': convergencesCount,
 		'averageFitness': averageFitness,
-		'averageList': averageList,
-		'deviationList': deviationList,
+		'averageFitnesPerIteration': averageFitnessPerIteration,
+		'fitnessDeviationPerIteration': fitnessDeviationPerIteration,
 	}
 	return metrics
 
@@ -94,6 +102,7 @@ def dumbImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		mutationFunction=mutation.mutationRandomGene,
 		nQueens=8,
 		numberOfIndividuals=100,
+		numberOfCouples=1,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
@@ -110,6 +119,7 @@ def naiveImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		mutationFunction=mutation.mutationSwapTwo,
 		nQueens=8,
 		numberOfIndividuals=100,
+		numberOfCouples=1,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
@@ -126,6 +136,7 @@ def smartImplementation(nQueens=8, maximumFitnessEvaluations=10000):
 		mutationFunction=mutation.mutationDisturbance,
 		nQueens=8,
 		numberOfIndividuals=100,
+		numberOfCouples=1,
 		recombinationProbability=0.9,
 		mutationProbability=0.4,
 		maximumFitnessEvaluations=maximumFitnessEvaluations,
@@ -137,6 +148,8 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30):
 	convergencesIteration = []
 	convergencesPerExecution = []
 	averageFitnessPerExecution = []
+	averageFitnesPerIterationPerExecution = []
+	fitnessDeviationPerIterationPerExecution = []
 	# Execute the naive algorithm multiple times and calculate averages.
 	for i in range(times):
 		# Run algorithm implementation.
@@ -145,54 +158,95 @@ def implementationWrapper(implementationFunction, nQueens=8, times=30):
 		firstSolutionFoundAtIteration = metrics['firstSolutionFoundAtIteration']
 		numberOfConvergences = metrics['numberOfConvergences']
 		averageFitness = metrics['averageFitness']
-
-		if i == 0: # just plot one example of execution
-			averageList = metrics['averageList']
-			deviationList = metrics['deviationList']
-			conveniences.createFolder(implementationFunction.__name__)
-
-			plotAvr,fig = plotation.plotList(averageList,'fitness medio por iteracao')
-			plotation.saveImage(implementationFunction.__name__+'/average.png', plotAvr, fig)
-			plotDev, fig = plotation.plotList(deviationList,'desvio padrao do fitness por iteracao')
-			plotation.saveImage(implementationFunction.__name__+'/deviation.png', plotDev, fig)
+		averageFitnesPerIteration = metrics['averageFitnesPerIteration']
+		fitnessDeviationPerIteration = metrics['fitnessDeviationPerIteration']
 		# Update metrics if a solution was found.
 		if foundSolution:
 			# Count the number of executions that converged.
 			success += 1
-			# print(metrics)
 			# Store the iteration in which the algorithm converged, the number of
 			# individuals that converged and the average fitness per execution. We
 			# use this to calculate the mean and stardand deviation.
 			convergencesIteration.append(float(firstSolutionFoundAtIteration))
 			convergencesPerExecution.append(float(numberOfConvergences))
 			averageFitnessPerExecution.append(float(averageFitness))
+		# Store data relative to each iteration in each execution, we'll use it later
+		# to plot the average fitness per iteration and fitness deviation per iteration
+		# of the execution that was closer to the all time averages.
+		averageFitnesPerIterationPerExecution.append(averageFitnesPerIteration)
+		fitnessDeviationPerIterationPerExecution.append(fitnessDeviationPerIteration)
+
+	# Find the execution whose average fitness was closer to the all time average.
+	#averageFitness = statistics.mean(averageFitnessPerExecution)
+	#closestExecutionIndex = statistics.closestValueToAverage(averageFitnessPerExecution, averageFitness)
+
+	# Find the execution whose average iteration of convergence was closer to the all time average.
+	averageConvergenceIteration = statistics.mean(convergencesIteration)
+	closestExecutionIndex = statistics.closestValueToAverage(convergencesIteration, averageConvergenceIteration)
+
+	# Create a folder to place the graphs.
+	conveniences.createFolder('results')
+
+	# Prepare data to generate the graph.
+	fileBaseName = "results/"+(implementationFunction.__name__).lower()
+	e = fitnessDeviationPerIterationPerExecution[closestExecutionIndex]
+	y = averageFitnesPerIterationPerExecution[closestExecutionIndex]
+	x = [x for x in range(len(y))]
+
+	# Error bar graph (fitness and standard deviation).
+	# plot.figure()
+	# plot.errorbar(x, y, e, linestyle='None', marker='^')
+	# plot.show()
+
+	# Average fitness graph.
+	plot.figure()
+	plot.plot(x, y, "s-")
+	plot.title("Average fitness per iteration.")
+	plot.xlabel("Iteration")
+	plot.ylabel("Average Fitness")
+	plot.savefig((fileBaseName+"-average-fitness.png"), bbox_inches="tight")
+
+	# Standard deviation graph.
+	plot.figure()
+	plot.plot(x, e, "o-")
+	plot.title("Standard deviation per iteration.")
+	plot.xlabel("Iteration")
+	plot.ylabel("Fitness Standard Deviation")
+	plot.savefig((fileBaseName+"-standard-deviation.png"), bbox_inches="tight")
+
+	#implementationFunction.__name__
+	#plotAvr,fig = plotation.plotList(averageList,'fitness medio por iteracao')
+	#plotation.saveImage(implementationFunction.__name__+'/average.png', plotAvr, fig)
+	#plotDev, fig = plotation.plotList(deviationList,'desvio padrao do fitness por iteracao')
+	#plotation.saveImage(implementationFunction.__name__+'/deviation.png', plotDev, fig)
 
 	# ...
 	print('1. Em quantas execucoes o algoritmo convergiu?')
 	print('   ' + str(success) + '/' + str(times))
+
 	# ...
 	average = statistics.mean(convergencesIteration)
 	deviation = statistics.stddev(convergencesIteration)
 	print('2. Em que iteracao o algoritmo convergiu?')
 	print('   Media:' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
-	conveniences.writeToFile('iterations.out', average)
-	conveniences.writeToFile('iterations.out', deviation)
-	# plotation.plotGaussian(average, deviation, 'iterations')
+	#conveniences.writeToFile('iterations.out', average)
+	#conveniences.writeToFile('iterations.out', deviation)
+
 	# ...
 	average = statistics.mean(convergencesPerExecution)
 	deviation = statistics.stddev(convergencesPerExecution)
 	print('3. Quantos de individuos convergiram por execucao?')
 	print('   Media:' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
-	conveniences.writeToFile('convergency.out', average)
-	conveniences.writeToFile('convergency.out', deviation)
-	# plotation.plotGaussian(average, deviation, 'convergency')
+	#conveniences.writeToFile('convergency.out', average)
+	#conveniences.writeToFile('convergency.out', deviation)
+
 	# ...
 	average = statistics.mean(averageFitnessPerExecution)
 	deviation = statistics.stddev(averageFitnessPerExecution)
 	print('4. Fitness medio alcancado?')
 	print('   Media: ' + str(average))
 	print('   Desvio Padrao:' + str(deviation))
-	conveniences.writeToFile('fitness.out', average)
-	conveniences.writeToFile('fitness.out', deviation)
+	#conveniences.writeToFile('fitness.out', average)
+	#conveniences.writeToFile('fitness.out', deviation)

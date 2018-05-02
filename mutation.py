@@ -11,7 +11,7 @@ def mutationRandomGene(individual=[], genesCount=8, mutationProbability=0.4):
 	mutationProbability *= 100
 	mutationChance = random.randint(1, 100)
 	if mutationChance > mutationProbability:
-		return individual
+		return individual, False
 	# Randomically select a gene index.
 	geneIndex = random.randint(0, genesCount-1)
 	geneIndex = geneIndex * (len(individual)/genesCount)
@@ -19,7 +19,7 @@ def mutationRandomGene(individual=[], genesCount=8, mutationProbability=0.4):
 	geneSize = (len(individual)/genesCount)
 	for i in range(geneSize):
 		individual[geneIndex+i] = random.randint(0, 1)
-	return individual
+	return individual, True
 
 # Swaps two genes.
 def mutationSwapTwo(individual=[], genesCount=8, mutationProbability=0.4):
@@ -28,7 +28,7 @@ def mutationSwapTwo(individual=[], genesCount=8, mutationProbability=0.4):
 	mutationProbability *= 100
 	mutationChance = random.randint(1, 100)
 	if mutationChance > mutationProbability:
-		return individual
+		return individual, False
 	# Randomically select a gene index.
 	geneIndex1 = random.randint(0, genesCount-1)
 	geneIndex1 = geneIndex1 * geneSize
@@ -42,7 +42,7 @@ def mutationSwapTwo(individual=[], genesCount=8, mutationProbability=0.4):
 		aux = individual[geneIndex1+i]
 		individual[geneIndex1+i] = individual[geneIndex2+i]
 		individual[geneIndex2+i] = aux
-	return individual
+	return individual, True
 
 def mutationDisturbance(individual=[], genesCount=8, mutationProbability=0.4):
 	individualAux = []
@@ -52,7 +52,7 @@ def mutationDisturbance(individual=[], genesCount=8, mutationProbability=0.4):
 	mutationProbability *= 100
 	mutationChance = random.randint(1, 100)
 	if mutationChance > mutationProbability:
-		return individual
+		return individual, False
 
 	# Randomically select a gene index.
 	geneIndex1 = random.randint(0, genesCount-1)
@@ -76,4 +76,4 @@ def mutationDisturbance(individual=[], genesCount=8, mutationProbability=0.4):
 	for i in range(rangeAux):
 		individual[lowerIndex+i] = individualAux[i]
 
-	return individual
+	return individual, True

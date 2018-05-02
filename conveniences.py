@@ -1,7 +1,9 @@
 #
 # conveniences.py
 #
+
 import os
+
 # Converts a portion of a binary string to a decimal.
 def binaryStringToDecimal(string, i, length):
     num = 0
@@ -37,6 +39,7 @@ def binaryToDecimal(l):
 		arr.append(int(tmp,2))
 	return arr
 
+# ...
 def decimalToBinary(l, expectedLength=3):
     s = listToStr(l)
     arr=[]
@@ -52,19 +55,21 @@ def decimalToBinary(l, expectedLength=3):
             arrAux.insert(0,0)
         arr = arr + arrAux
     return arr
+
 # Write a data in the file especified
 def writeToFile(file, data):
 	with open(file,'a') as fd:
 		fd.write(str(data))
 		fd.write('\n')
 
+# Creates a folder in the specified path.
 def createFolder(name):
 	try:
 		os.mkdir(name)
 	except:
 		pass
 
-# Remove files used to plot graphs
+# Remove files used to plot graphs.
 def removeOutFiles():
 	files = [
 			'iterations.out',
@@ -82,3 +87,10 @@ def removeOutFiles():
 			os.remove(file)
 		except:
 			pass
+
+# Remove python bytecode files.
+def deleteBytecodeFiles():
+    try:
+        os.system("find . -type f -name \"*.pyc\" -delete")
+    except:
+        pass
