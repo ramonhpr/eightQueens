@@ -14,14 +14,13 @@ def selectParentsBestTwoOutOfFive(population=[], fitnesses=[]):
 	couples = []
 	indvs = list(population)
 	# Distribute individuals and place the top two together.
-	while len(indvs) > 0:
-		candidates = []
-		for i in range(5):
+	candidates = []
+	for i in range(5):
 			ind = random.choice(indvs)
 			candidates.append(ind)
 			indvs.remove(ind)
-		candidates.sort(key=lambda x: fitnesses[population.index(x)], reverse=True)
-		couples.append([candidates[0], candidates[1]])
+	candidates.sort(key=lambda x: fitnesses[population.index(x)], reverse=True)
+	couples.append([candidates[0], candidates[1]])
 	return couples
 
 # ...

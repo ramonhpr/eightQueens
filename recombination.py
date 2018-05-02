@@ -44,6 +44,9 @@ def crossoverCutAndCrossFill(couples=[], genesCount=8, recombinationProbability=
 			# Append childs.
 			childs.append(child1)
 			childs.append(child2)
+		else:
+			childs.append(couple[0])
+			childs.append(couple[1])
 	return childs
 
 # Cut and crossfill method simplified (doesn't check for duplicates).
@@ -67,6 +70,9 @@ def crossoverCutAndCrossFillSimplified(couples=[], genesCount=8, recombinationPr
 			# Append childs.
 			childs.append(childA)
 			childs.append(childB)
+		else:
+			childs.append(couple[0])
+			childs.append(couple[1])
 	return childs
 
 def crossoverOrderOne(couples=[], genesCount=8, recombinationProbability=0.9):
@@ -113,5 +119,7 @@ def crossoverOrderOne(couples=[], genesCount=8, recombinationProbability=0.9):
 
 			childs.append(child1)
 			childs.append(child2)
-
+		else:
+			childs.append(couple[0])
+			childs.append(couple[1])
 	return childs
