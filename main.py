@@ -24,7 +24,7 @@ print('##################################################')
 print('############## IMPLEMENTACAO BURRA ###############')
 print('##################################################')
 
-implementation.implementationWrapper(
+dumb_x, dumb_y, dumb_e = implementation.implementationWrapper(
     implementationFunction=implementation.dumbImplementation,
     nQueens=n,
     times=times,
@@ -38,7 +38,7 @@ print('')
 
 print('')
 print('##################################################')
-print('############## IMPLEMENTACAO BASICA ##############')
+print('############# IMPLEMENTACAO PARTE I ##############')
 print('##################################################')
 
 naive_x, naive_y, naive_e = implementation.implementationWrapper(
@@ -54,7 +54,7 @@ print('')
 
 print('')
 print('##################################################')
-print('############# IMPLEMENTACAO ESPERTA ##############')
+print('############ IMPLEMENTACAO PARTE II ##############')
 print('##################################################')
 
 smart_x, smart_y, smart_e = implementation.implementationWrapper(

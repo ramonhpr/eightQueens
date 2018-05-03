@@ -93,8 +93,10 @@ def dumbImplementation(nQueens=8, maximumFitnessEvaluations=10000, numberOfCoupl
 
 	return implementation(
 		initialPopulation=population,
-		maxFitness=fitness.fitnessNaiveMaxFitness(),
-		fitnessFunction=fitness.fitnessNaive,
+		#maxFitness=fitness.fitnessNaiveMaxFitness(),
+		#fitnessFunction=fitness.fitnessNaive,
+		maxFitness=fitness.fitnessSumAllMaxFitness(),
+		fitnessFunction=fitness.fitnessSumAll,
 		parentsSelectionFunction=parents.selectParentsBestTwoOutOfFive,
 		recombinationFunction=recombination.crossoverCutAndCrossFillSimplified,
 		mutationFunction=mutation.mutationRandomGene,

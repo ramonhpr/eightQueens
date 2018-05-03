@@ -9,7 +9,7 @@ def mean(data):
     n = len(data)
     if n < 1:
         return 0
-    return sum(data)/n # in Python 2 use sum(data)/float(n)
+    return sum(data)/float(n)
 
 def _ss(data):
     """Return sum of square deviations of sequence data."""
